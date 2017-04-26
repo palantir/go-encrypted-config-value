@@ -24,8 +24,9 @@ type EncryptedValue interface {
 	// ToSerializable returns the string that can be used to serialize this EncryptedValue. The returned string can
 	// be used as input to the "NewEncryptedValue" function to recreate the value. The serialized string is of the
 	// form "enc:<base64-encoded-content>". The exact content that is base64-encoded is dependent on the concrete
-	// implementation.
-	ToSerializable() (string, error)
+	// implementation. A valid EncryptedValue must be able to successfully generate a serializable form of itself --
+	// that is, for any valid EncryptedValue, this call must succeed and produce valid output.
+	ToSerializable() string
 }
 
 const encPrefix = "enc:"
@@ -76,12 +77,16 @@ func NewEncryptedValue(evStr string) (EncryptedValue, error) {
 	return evWrapper.val, nil
 }
 
-func encryptedValToSerializable(ev EncryptedValue) (string, error) {
+func encryptedValToSerializable(ev EncryptedValue) string {
 	jsonBytes, err := json.Marshal(ev)
 	if err != nil {
-		return "", err
+		// part of the contract of EncryptedValue is that it must be safe to JSON-serialize.
+		// If an error occurs here, it is considered a programmer error.
+		panic(fmt.Errorf("json.Marshal for EncryptedValue of type %T failed: this should never occur, "+
+			"and indicates that there is a bug in the implementation. Please file an issue on the go-encrypted-config-value project. "+
+			"Error: %v", ev, err))
 	}
-	return fmt.Sprintf(encPrefix + base64.StdEncoding.EncodeToString(jsonBytes)), nil
+	return fmt.Sprintf(encPrefix + base64.StdEncoding.EncodeToString(jsonBytes))
 }
 
 type encryptedValWrapper struct {

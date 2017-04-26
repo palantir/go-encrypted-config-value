@@ -69,11 +69,7 @@ func NormalizeEncryptedValueStringVars(input []byte, key KeyWithType, normalized
 		// if an entry for the plaintext of the current encrypted value exists in the normalized map, replace
 		// the encrypted value with the normalized one.
 		if sub, present := normalized[plaintext]; present {
-			newVal, err := sub.ToSerializable()
-			if err != nil {
-				return raw, true
-			}
-			return []byte(newVal), true
+			return []byte(sub.ToSerializable()), true
 		}
 		// this is the first time that this plaintext has been encountered for an encrypted value. Store the
 		// current encrypted value as the value for the plaintext in the map so that all subsequent occurrences
