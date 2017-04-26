@@ -28,7 +28,7 @@ func TestKeyWithTypeAndEncryptedValSerDe(t *testing.T) {
 		// create encrypted value and serialize
 		ev, err := encrypter.Encrypt(wantPlaintext, kp.EncryptionKey)
 		require.NoError(t, err, "Case %d: %s", i, currAlg)
-		evStr, err := ev.ToSerializable()
+		evStr := ev.ToSerializable()
 		require.NoError(t, err, "Case %d: %s", i, currAlg)
 
 		// serialize decryption key

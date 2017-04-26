@@ -42,6 +42,6 @@ func (ev *legacyEncryptedValue) Decrypt(key KeyWithType) (string, error) {
 // ToSerializable returns the serializable representation for this legacy encrypted value, which is of the form:
 // "enc:<base64-encoded-ciphertext-bytes>". For AES values, the ciphertext bytes are "nonce+ciphertext+tag", while for
 // RSA values the ciphertext is the raw ciphertext.
-func (ev *legacyEncryptedValue) ToSerializable() (string, error) {
-	return fmt.Sprintf(encPrefix + base64.StdEncoding.EncodeToString(ev.encryptedBytes)), nil
+func (ev *legacyEncryptedValue) ToSerializable() string {
+	return fmt.Sprintf(encPrefix + base64.StdEncoding.EncodeToString(ev.encryptedBytes))
 }
