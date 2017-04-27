@@ -7,11 +7,16 @@ package encryptedconfigvalue
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 const stringVarEncryptedValRegexpStr = `\${enc:[^}]+}`
 
 var stringVarEncryptedValueRegexp = regexp.MustCompile(stringVarEncryptedValRegexpStr)
+
+// StringVar represents a string variable. It is a string of the form "${...}", where the content of the string variable
+// is the text that occurs between the braces.
+type StringVar string
 
 // ContainsEncryptedConfigValueStringVars returns true if the provided input contains any occurrences of string
 // variables that consist of encrypted values. These are of the form "${enc:...}".
@@ -79,11 +84,37 @@ func NormalizeEncryptedValueStringVars(input []byte, key KeyWithType, normalized
 	})
 }
 
-// ToStringVariable returns the string variable representation of the provided input. It does so by prepending "${" to
-// the input and appending "}" to the input. This string variable form is compatible with the default string variable
-// form used by the org.apache.commons.lang3.text.StrSubstitutor library.
-func ToStringVariable(input string) string {
-	return fmt.Sprintf(`${%s}`, input)
+// DecryptSingleEncryptedValueStringVar takes the content of a string variable, interprets it as an EncryptedValue and
+// returns the result of decrypting that value using the provided key. Returns an error if the input string variable is
+// not a valid string variable, if the contents of the string variable is not a valid EncryptedValue, or if the
+// decryption fails.
+func DecryptSingleEncryptedValueStringVar(input StringVar, key KeyWithType) (string, error) {
+	contents, err := input.Contents()
+	if err != nil {
+		return "", err
+	}
+	ev, err := NewEncryptedValue(contents)
+	if err != nil {
+		return "", err
+	}
+	return ev.Decrypt(key)
+}
+
+// ToStringVar returns the string variable representation of the provided input. It does so by prepending "${" to the
+// input and appending "}" to the input. This string variable form is compatible with the default string variable form
+// used by the org.apache.commons.lang3.text.StrSubstitutor library.
+func ToStringVar(input string) StringVar {
+	return StringVar(fmt.Sprintf(`${%s}`, input))
+}
+
+// Contents returns contents of the string variable. Returns an error if the provided input is not a valid string
+// variable (if it does not start with "${" and end with "}").
+func (sv StringVar) Contents() (string, error) {
+	inputStr := string(sv)
+	if !strings.HasPrefix(inputStr, `${`) && !strings.HasSuffix(inputStr, `}`) {
+		return "", fmt.Errorf("string variable must be of the form %q, was: %s", `${...}`, inputStr)
+	}
+	return inputStr[len(`${`) : len(inputStr)-len(`}`)], nil
 }
 
 const stringVarRegexpConst = `\${([^}]+)}`

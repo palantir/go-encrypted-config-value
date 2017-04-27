@@ -35,11 +35,11 @@ func TestKeyWithTypeAndEncryptedValSerDe(t *testing.T) {
 		encKeyStr := kp.DecryptionKey.ToSerializable()
 
 		// deserialize encrypted value
-		ev, err = encryptedconfigvalue.NewEncryptedValue(evStr)
+		ev, err = encryptedconfigvalue.NewEncryptedValueFromSerialized(evStr)
 		require.NoError(t, err, "Case %d: %s", i, currAlg)
 
 		// deserialize key
-		key, err := encryptedconfigvalue.NewKeyWithType(encKeyStr)
+		key, err := encryptedconfigvalue.NewKeyWithTypeFromSerialized(encKeyStr)
 		require.NoError(t, err, "Case %d: %s", i, currAlg)
 
 		// decrypt
@@ -58,8 +58,8 @@ const (
 func TestReadRSAKeys(t *testing.T) {
 	for i, currCase := range []struct {
 		name       string
-		pubKeyStr  string
-		privKeyStr string
+		pubKeyStr  encryptedconfigvalue.SerializedKeyWithType
+		privKeyStr encryptedconfigvalue.SerializedKeyWithType
 	}{
 		{
 			"new format",
@@ -72,9 +72,9 @@ func TestReadRSAKeys(t *testing.T) {
 			"RSA:" + rsaPrivKeyBase64,
 		},
 	} {
-		pubKey, err := encryptedconfigvalue.NewKeyWithType(currCase.pubKeyStr)
+		pubKey, err := encryptedconfigvalue.NewKeyWithTypeFromSerialized(currCase.pubKeyStr)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
-		privKey, err := encryptedconfigvalue.NewKeyWithType(currCase.privKeyStr)
+		privKey, err := encryptedconfigvalue.NewKeyWithTypeFromSerialized(currCase.privKeyStr)
 		require.NoError(t, err)
 
 		wantPlaintext := "plaintext to encrypt"
