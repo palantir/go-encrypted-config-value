@@ -84,6 +84,14 @@ func NormalizeEncryptedValueStringVars(input []byte, key KeyWithType, normalized
 	})
 }
 
+// DecryptSingleEncryptedValueStringVarString takes the content of a string variable, interprets it as an EncryptedValue
+// and returns the result of decrypting that value using the provided key. Returns an error if the input string variable
+// is not a valid string variable, if the contents of the string variable is not a valid EncryptedValue, or if the
+// decryption fails.
+func DecryptSingleEncryptedValueStringVarString(input string, key KeyWithType) (string, error) {
+	return DecryptSingleEncryptedValueStringVar(StringVar(input), key)
+}
+
 // DecryptSingleEncryptedValueStringVar takes the content of a string variable, interprets it as an EncryptedValue and
 // returns the result of decrypting that value using the provided key. Returns an error if the input string variable is
 // not a valid string variable, if the contents of the string variable is not a valid EncryptedValue, or if the
