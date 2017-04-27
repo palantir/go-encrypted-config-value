@@ -11,6 +11,14 @@ import (
 	"strings"
 )
 
+// SerializedEncryptedValue is the serialized string representation of an EncryptedValue. It is a string of the form
+// "enc:<base64-encoded-encrypted-value>".
+type SerializedEncryptedValue string
+
+func newSerializedEncryptedValue(bytes []byte) SerializedEncryptedValue {
+	return SerializedEncryptedValue(fmt.Sprintf(encPrefix + base64.StdEncoding.EncodeToString(bytes)))
+}
+
 // EncryptedValue represents a value that has been encrypted using encrypted-config-value. The value can be decrypted
 // when provided with a key (the type of the key should be a decryption key that can decrypt the value) and supports
 // returning a string representation that can be used to serialize the EncryptedValue.
@@ -26,10 +34,22 @@ type EncryptedValue interface {
 	// form "enc:<base64-encoded-content>". The exact content that is base64-encoded is dependent on the concrete
 	// implementation. A valid EncryptedValue must be able to successfully generate a serializable form of itself --
 	// that is, for any valid EncryptedValue, this call must succeed and produce valid output.
-	ToSerializable() string
+	ToSerializable() SerializedEncryptedValue
 }
 
 const encPrefix = "enc:"
+
+// MustNewEncryptedValueFromSerialized returns the result of calling NewEncryptedValueFromSerialized with the provided
+// arguments. Panics if the call returns an error. This function should only be used when instantiating values that are
+// known to be formatted correctly.
+func MustNewEncryptedValueFromSerialized(evStr SerializedEncryptedValue) EncryptedValue {
+	return MustNewEncryptedValue(string(evStr))
+}
+
+// NewEncryptedValueFromSerialized creates a new encrypted value from its string serialized representation.
+func NewEncryptedValueFromSerialized(evStr SerializedEncryptedValue) (EncryptedValue, error) {
+	return NewEncryptedValue(string(evStr))
+}
 
 // MustNewEncryptedValue returns the result of calling NewEncryptedValue with the provided arguments. Panics if the call
 // returns an error. This function should only be used when instantiating values that are known to be formatted
@@ -77,7 +97,7 @@ func NewEncryptedValue(evStr string) (EncryptedValue, error) {
 	return evWrapper.val, nil
 }
 
-func encryptedValToSerializable(ev EncryptedValue) string {
+func encryptedValToSerializable(ev EncryptedValue) SerializedEncryptedValue {
 	jsonBytes, err := json.Marshal(ev)
 	if err != nil {
 		// part of the contract of EncryptedValue is that it must be safe to JSON-serialize.
@@ -86,7 +106,7 @@ func encryptedValToSerializable(ev EncryptedValue) string {
 			"and indicates that there is a bug in the implementation. Please file an issue on the go-encrypted-config-value project. "+
 			"Error: %v", ev, err))
 	}
-	return fmt.Sprintf(encPrefix + base64.StdEncoding.EncodeToString(jsonBytes))
+	return newSerializedEncryptedValue(jsonBytes)
 }
 
 type encryptedValWrapper struct {

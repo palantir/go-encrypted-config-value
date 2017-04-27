@@ -33,11 +33,31 @@ type KeyWithType struct {
 	Key  encryption.Key
 }
 
+// SerializedKeyWithType is the serialized string representation of a KeyWithType. It is a string of the form
+// "<key-type>:<base64-encoded-key-bytes>".
+type SerializedKeyWithType string
+
+func newSerializedKeyWithType(keyType KeyType, keyBytes []byte) SerializedKeyWithType {
+	return SerializedKeyWithType(fmt.Sprintf("%s:%s", keyType, base64.StdEncoding.EncodeToString(keyBytes)))
+}
+
 // ToSerializable returns the string that can be used to serialize this KeyWithType. The returned string can be used as
 // input to the "NewKeyWithType" function to recreate the value. The serialized string is of the form
 // "<key-type>:<base64-encoded-key-bytes>".
-func (kwt KeyWithType) ToSerializable() string {
-	return fmt.Sprintf("%s:%s", kwt.Type, base64.StdEncoding.EncodeToString(kwt.Key.Bytes()))
+func (kwt KeyWithType) ToSerializable() SerializedKeyWithType {
+	return newSerializedKeyWithType(kwt.Type, kwt.Key.Bytes())
+}
+
+// MustNewKeyWithTypeFromSerialized returns the result of calling NewKeyWithTypeFromSerialized with the provided
+// arguments. Panics if the call returns an error. This function should only be used when instantiating keys that are
+// known to be formatted correctly.
+func MustNewKeyWithTypeFromSerialized(input SerializedKeyWithType) KeyWithType {
+	return MustNewKeyWithType(string(input))
+}
+
+// NewKeyWithTypeFromSerialized returns a new KeyWithType based on the provided SerializedKeyWithType.
+func NewKeyWithTypeFromSerialized(input SerializedKeyWithType) (KeyWithType, error) {
+	return NewKeyWithType(string(input))
 }
 
 // MustNewKeyWithType returns the result of calling NewKeyWithType with the provided arguments. Panics if the call

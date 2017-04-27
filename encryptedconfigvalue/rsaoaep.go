@@ -127,6 +127,6 @@ func (ev *rsaOAEPEncryptedValue) Decrypt(key KeyWithType) (string, error) {
 	return string(decrypted), err
 }
 
-func (ev *rsaOAEPEncryptedValue) ToSerializable() string {
+func (ev *rsaOAEPEncryptedValue) ToSerializable() SerializedEncryptedValue {
 	return encryptedValToSerializable(ev)
 }

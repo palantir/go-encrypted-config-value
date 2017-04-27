@@ -133,6 +133,6 @@ func (ev *aesGCMEncryptedValue) Decrypt(key KeyWithType) (string, error) {
 	return string(decrypted), err
 }
 
-func (ev *aesGCMEncryptedValue) ToSerializable() string {
+func (ev *aesGCMEncryptedValue) ToSerializable() SerializedEncryptedValue {
 	return encryptedValToSerializable(ev)
 }
