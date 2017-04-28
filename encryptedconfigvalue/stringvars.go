@@ -108,10 +108,10 @@ func DecryptSingleEncryptedValueStringVar(input StringVar, key KeyWithType) (str
 	return ev.Decrypt(key)
 }
 
-// ToStringVar returns the string variable representation of the provided input. It does so by prepending "${" to the
-// input and appending "}" to the input. This string variable form is compatible with the default string variable form
-// used by the org.apache.commons.lang3.text.StrSubstitutor library.
-func ToStringVar(input string) StringVar {
+// NewStringVar returns a new string variable that consists of wrapping the provided string within a string variable
+// format. It does so by prepending "${" and appending "}" to the input. This string variable form is compatible with
+// the default string variable form used by the org.apache.commons.lang3.text.StrSubstitutor library.
+func NewStringVar(input string) StringVar {
 	return StringVar(fmt.Sprintf(`${%s}`, input))
 }
 
