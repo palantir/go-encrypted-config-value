@@ -18,8 +18,7 @@ func TestAESKeySerDe(t *testing.T) {
 	require.NoError(t, err)
 
 	aesKeyBytes := aesKey.Bytes()
-	aesKey, err = encryption.AESKeyFromBytes(aesKeyBytes)
-	require.NoError(t, err)
+	aesKey = encryption.AESKeyFromBytes(aesKeyBytes)
 
 	cipher := encryption.NewAESGCMCipher()
 	plaintext := "input plaintext"

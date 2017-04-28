@@ -20,12 +20,8 @@ func NewAESKey(keySizeBits int) (KeyWithType, error) {
 
 // AESKeyFromBytes creates a new AES key that uses the provided bytes as its key material and returns a new KeyWithType
 // that is typed as an AES key and contains the generated key.
-func AESKeyFromBytes(key []byte) (KeyWithType, error) {
-	aesKey, err := encryption.AESKeyFromBytes(key)
-	if err != nil {
-		return KeyWithType{}, err
-	}
-	return AESKeyFromKey(aesKey), nil
+func AESKeyFromBytes(key []byte) KeyWithType {
+	return AESKeyFromKey(encryption.AESKeyFromBytes(key))
 }
 
 // AESKeyFromKey returns a new KeyWithType that wraps the provided AESKey.
