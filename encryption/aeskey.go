@@ -18,13 +18,13 @@ func NewAESKey(keySizeBits int) (*AESKey, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate random bytes for AES key: %v", err)
 	}
-	return AESKeyFromBytes(k)
+	return AESKeyFromBytes(k), nil
 }
 
-func AESKeyFromBytes(key []byte) (*AESKey, error) {
+func AESKeyFromBytes(key []byte) *AESKey {
 	return &AESKey{
 		key: key,
-	}, nil
+	}
 }
 
 func (a *AESKey) Bytes() []byte {

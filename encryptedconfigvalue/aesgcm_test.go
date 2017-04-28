@@ -52,9 +52,7 @@ func TestAESJSONSerDe(t *testing.T) {
 	} {
 		aesKeyBytes, err := base64.StdEncoding.DecodeString(currCase.keyBase64)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
-
-		aesKey, err := AESKeyFromBytes(aesKeyBytes)
-		require.NoError(t, err, "Case %d: %s", i, currCase.name)
+		aesKey := AESKeyFromBytes(aesKeyBytes)
 
 		var ev aesGCMEncryptedValue
 		err = json.Unmarshal([]byte(currCase.json), &ev)
@@ -103,8 +101,7 @@ func TestAESDecryptUsingStoredKey(t *testing.T) {
 	} {
 		keyBytes, err := base64.StdEncoding.DecodeString(currCase.keyBase64)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
-		aesKey, err := AESKeyFromBytes(keyBytes)
-		require.NoError(t, err, "Case %d: %s", i, currCase.name)
+		aesKey := AESKeyFromBytes(keyBytes)
 
 		ciphertext, err := base64.StdEncoding.DecodeString(currCase.encryptedBase64)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
