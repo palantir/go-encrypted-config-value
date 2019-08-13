@@ -7,10 +7,9 @@ package encryption_test
 import (
 	"testing"
 
+	"github.com/palantir/go-encrypted-config-value/encryption"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/palantir/go-encrypted-config-value/encryption"
 )
 
 func TestRSAKeySerDe(t *testing.T) {

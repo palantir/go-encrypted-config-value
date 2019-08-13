@@ -7,10 +7,9 @@ package encryptedconfigvalue_test
 import (
 	"testing"
 
+	"github.com/palantir/go-encrypted-config-value/encryptedconfigvalue"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/palantir/go-encrypted-config-value/encryptedconfigvalue"
 )
 
 const (
@@ -71,6 +70,6 @@ func TestDecryptEncryptedValue(t *testing.T) {
 		decrypted, err := ev.Decrypt(decKey)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
 
-		assert.Equal(t, currCase.plaintext, string(decrypted), "Case %d: %s", i, currCase.name)
+		assert.Equal(t, currCase.plaintext, decrypted, "Case %d: %s", i, currCase.name)
 	}
 }

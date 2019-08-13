@@ -9,10 +9,9 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/palantir/go-encrypted-config-value/encryption"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/palantir/go-encrypted-config-value/encryption"
 )
 
 func TestRSAEncryptDecrypt(t *testing.T) {
@@ -65,7 +64,7 @@ func TestRSAJSONSerDe(t *testing.T) {
 		decrypted, err := ev.Decrypt(rsaKey)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
 
-		assert.Equal(t, currCase.wantDecrypted, string(decrypted), "Case %d: %s", i, currCase.name)
+		assert.Equal(t, currCase.wantDecrypted, decrypted, "Case %d: %s", i, currCase.name)
 
 		marshaledJSON, err := json.Marshal(ev)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
