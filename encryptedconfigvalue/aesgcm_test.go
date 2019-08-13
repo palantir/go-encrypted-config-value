@@ -61,7 +61,7 @@ func TestAESJSONSerDe(t *testing.T) {
 		decrypted, err := ev.Decrypt(aesKey)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)
 
-		assert.Equal(t, currCase.wantDecrypted, string(decrypted), "Case %d: %s", i, currCase.name)
+		assert.Equal(t, currCase.wantDecrypted, decrypted, "Case %d: %s", i, currCase.name)
 
 		marshaledJSON, err := json.Marshal(ev)
 		require.NoError(t, err, "Case %d: %s", i, currCase.name)

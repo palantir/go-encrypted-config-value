@@ -7,10 +7,9 @@ package encryptedconfigvalue_test
 import (
 	"testing"
 
+	"github.com/palantir/go-encrypted-config-value/encryptedconfigvalue"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/palantir/go-encrypted-config-value/encryptedconfigvalue"
 )
 
 const aesTestKey = "AES:kHCJE62tlzYsP2eIxSnstSJVIMyk74+gCu/ImrhGMq8="
