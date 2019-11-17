@@ -1,3 +1,7 @@
+<p align="right">
+<a href="https://autorelease.general.dmz.palantir.tech/palantir/go-encrypted-config-value"><img src="https://img.shields.io/badge/Perform%20an-Autorelease-success.svg" alt="Autorelease"></a>
+</p>
+
 go-encrypted-config-value
 =========================
 `go-encrypted-config-value` is a Go implementation of the [encrypted-config-value](https://github.com/palantir/encrypted-config-value)
