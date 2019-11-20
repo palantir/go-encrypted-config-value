@@ -1,0 +1,5 @@
+type: feature
+feature:
+  description: <!-- User-facing outcomes this PR delivers -->
+  links:
+  - https://github.com/palantir/go-encrypted-config-value/pull/22
