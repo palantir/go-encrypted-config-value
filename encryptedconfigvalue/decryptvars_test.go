@@ -25,15 +25,15 @@ type complicatedStruct struct {
 	Map           map[string]string
 	Alias         aliasForStringType
 	DoubleAlias   doubleAliasForStringType
-	Interface     interface{}
-	Nested        map[string][]interface{}
+	Interface     any
+	Nested        map[string][]any
 	unexported    string
 }
 
 type decryptVarsTestCase struct {
 	name string
-	in   interface{}
-	want interface{}
+	in   any
+	want any
 }
 
 const (
@@ -57,14 +57,14 @@ func decryptVarsTestCases() []decryptVarsTestCase {
 		},
 		{
 			"Indirect string input",
-			testStringPtr(encryptedValVar),
-			testStringPtr(decrypted),
+			new(encryptedValVar),
+			new(decrypted),
 		},
 		{
 			"Complicated struct",
 			complicatedStruct{
 				String:        encryptedValVar,
-				Pointer:       testStringPtr(encryptedValVar),
+				Pointer:       new(encryptedValVar),
 				DoublePointer: testStringDoublePtr(encryptedValVar),
 				Slice: []string{
 					encryptedValVar,
@@ -81,7 +81,7 @@ func decryptVarsTestCases() []decryptVarsTestCase {
 				Alias:       aliasForStringType(encryptedValVar),
 				DoubleAlias: doubleAliasForStringType(encryptedValVar),
 				Interface:   encryptedValVar,
-				Nested: map[string][]interface{}{
+				Nested: map[string][]any{
 					"key": {
 						complicatedStruct{
 							String: encryptedValVar,
@@ -92,7 +92,7 @@ func decryptVarsTestCases() []decryptVarsTestCase {
 			},
 			complicatedStruct{
 				String:        decrypted,
-				Pointer:       testStringPtr(decrypted),
+				Pointer:       new(decrypted),
 				DoublePointer: testStringDoublePtr(decrypted),
 				Slice: []string{
 					decrypted,
@@ -109,7 +109,7 @@ func decryptVarsTestCases() []decryptVarsTestCase {
 				Alias:       aliasForStringType(decrypted),
 				DoubleAlias: doubleAliasForStringType(decrypted),
 				Interface:   decrypted,
-				Nested: map[string][]interface{}{
+				Nested: map[string][]any{
 					"key": {
 						complicatedStruct{
 							String: decrypted,
@@ -162,11 +162,12 @@ func TestCopyWithEncryptedStringVariablesDecryptedPerformsShallowCopy(t *testing
 	assert.True(t, in == got, "pointer values should be the same because they were copied")
 }
 
+//go:fix inline
 func testStringPtr(input string) *string {
-	return &input
+	return new(input)
 }
 
 func testStringDoublePtr(input string) **string {
-	ptr := testStringPtr(input)
+	ptr := new(input)
 	return &ptr
 }

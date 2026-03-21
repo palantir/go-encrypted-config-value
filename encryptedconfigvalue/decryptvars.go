@@ -16,7 +16,7 @@ import (
 // encrypted string variables within them, and replaces all such variables with their decrypted values if decryption is
 // successful using the provided key. String values are string fields, string pointers and strings in slices, arrays, or
 // values of maps. Map keys are specifically not included.
-func DecryptEncryptedStringVariables(in interface{}, key KeyWithType) {
+func DecryptEncryptedStringVariables(in any, key KeyWithType) {
 	decryptEncryptedStringVariables(reflect.ValueOf(in), key)
 }
 
@@ -24,7 +24,7 @@ func DecryptEncryptedStringVariables(in interface{}, key KeyWithType) {
 // DecryptEncryptedStringVariables on the copy. The input value is left unmodified (however, if the input value is a
 // pointer or contains pointers, those values may be modified, as the initial copy of the input that is made is a
 // shallow copy rather than a deep one). The returned value will be the same type as the value that was provided.
-func CopyWithEncryptedStringVariablesDecrypted(in interface{}, key KeyWithType) interface{} {
+func CopyWithEncryptedStringVariablesDecrypted(in any, key KeyWithType) any {
 	newVal := reflect.New(reflect.ValueOf(in).Type()).Elem()
 	newVal.Set(reflect.ValueOf(in))
 
@@ -47,8 +47,8 @@ func decryptEncryptedStringVariables(v reflect.Value, key KeyWithType) {
 			v.Set(decryptedVal)
 		}
 	case reflect.Struct:
-		for i := 0; i < v.NumField(); i++ {
-			decryptEncryptedStringVariables(v.Field(i), key)
+		for _, field := range v.Fields() {
+			decryptEncryptedStringVariables(field, key)
 		}
 	case reflect.Array, reflect.Slice:
 		for i := 0; i < v.Len(); i++ {
@@ -72,7 +72,7 @@ func decryptEncryptedStringVariables(v reflect.Value, key KeyWithType) {
 
 		decryptEncryptedStringVariables(newVal, key)
 		v.Set(newVal)
-	case reflect.Ptr:
+	case reflect.Pointer:
 		if v.IsNil() {
 			return
 		}
