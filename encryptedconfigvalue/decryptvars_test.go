@@ -162,11 +162,6 @@ func TestCopyWithEncryptedStringVariablesDecryptedPerformsShallowCopy(t *testing
 	assert.True(t, in == got, "pointer values should be the same because they were copied")
 }
 
-//go:fix inline
-func testStringPtr(input string) *string {
-	return new(input)
-}
-
 func testStringDoublePtr(input string) **string {
 	ptr := new(input)
 	return &ptr
