@@ -253,7 +253,7 @@ func decryptOAEP(oaepHash, mdf1Hash hash.Hash, random io.Reader, priv *rsa.Priva
 	lookingForIndex = 1
 	rest := db[oaepHash.Size():]
 
-	for i := 0; i < len(rest); i++ {
+	for i := range rest {
 		equals0 := subtle.ConstantTimeByteEq(rest[i], 0)
 		equals1 := subtle.ConstantTimeByteEq(rest[i], 1)
 		index = subtle.ConstantTimeSelect(lookingForIndex&equals1, i, index)
@@ -339,10 +339,7 @@ func encryptOAEP(oaepHash, mdf1Hash hash.Hash, random io.Reader, pub *rsa.Public
 // leftPad returns a new slice of length size. The contents of input are right
 // aligned in the new slice.
 func leftPad(input []byte, size int) (out []byte) {
-	n := len(input)
-	if n > size {
-		n = size
-	}
+	n := min(len(input), size)
 	out = make([]byte, size)
 	copy(out[len(out)-n:], input)
 	return
