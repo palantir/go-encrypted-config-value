@@ -16,12 +16,12 @@ func NewRSAKeys(keySizeBits int) (pubKey KeyWithType, privKey KeyWithType, err e
 		return KeyWithType{}, KeyWithType{}, err
 	}
 	return KeyWithType{
-			Type: RSAPubKey,
-			Key:  pub,
-		}, KeyWithType{
-			Type: RSAPrivKey,
-			Key:  priv,
-		}, nil
+		Type: RSAPubKey,
+		Key:  pub,
+	}, KeyWithType{
+		Type: RSAPrivKey,
+		Key:  priv,
+	}, nil
 }
 
 // RSAPublicKeyFromBytes creates a new KeyWithType that contains an RSA public key constructed using the provided bytes.
